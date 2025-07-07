@@ -15,7 +15,7 @@ export default function App() {
   const [length, setLength] = useState('medium');
   const [summaryData, setSummaryData] = useState([]);
   const [tags, setTags] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [showMap, setShowMap] = useState(false);
 
   const onSummarize = (data, exTags) => {
