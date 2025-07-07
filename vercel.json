@@ -6,9 +6,20 @@
       "use": "@vercel/static-build",
       "config": { "distDir": "build" }
     },
-    { "src": "api/**/*.js", "use": "@vercel/node" }
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
-    { "src": "/summarize", "dest": "/api/summarize.js" }
+    {
+      "src": "/summarize",
+      "methods": ["POST"],
+      "dest": "/api/summarize.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
   ]
 }
