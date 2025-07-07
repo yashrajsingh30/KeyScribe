@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+# 🎯 KeyScribe
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/yourusername/keyscribe)  
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/yourusername/keyscribe/actions)  
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)  
+[![OpenAI API](https://img.shields.io/badge/OpenAI-Enabled-purple)](https://platform.openai.com)
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+> **KeyScribe** is a premium note-taking workspace with integrated AI “superpowers”.  
+> Capture, organize, and enrich your ideas—and let GPT-4.1 Nano summarize, extract tags, highlight context, and even build a mind-map of your notes.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📋 Table of Contents
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [✨ Features](#-features)  
+- [🖼️ Demo](#️-demo)  
+- [🚀 Getting Started](#-getting-started)  
+  - [Prerequisites](#prerequisites)  
+  - [Installation](#installation)  
+  - [Environment Variables](#environment-variables)  
+  - [Running Locally](#running-locally)  
+- [🗂️ Project Structure](#️-project-structure)  
+- [🛠️ Tech Stack](#️-tech-stack)  
+- [📈 Cost Optimization](#-cost-optimization)  
+- [🤝 Contributing](#-contributing)  
+- [📝 License](#-license)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ✨ Features
 
-### `npm run build`
+- 🗒️ **Notebooks & Notes**  
+  - Create, rename, and organize notes in notebooks  
+  - Autosave to `localStorage` for instant persistence  
+- 🤖 **AI Sidebar**  
+  - **Summarization** (3/5/8-bullet mode)  
+  - **Keyword & Tag Extraction**  
+  - **Contextual Highlighting** — click a bullet to jump to the source  
+  - **Mind-Map Generation** — interactive graph of your note’s structure  
+- 🎨 **Premium UI**  
+  - 🔆 Light & 🌙 Dark mode with smooth transitions  
+  - 🖋️ Refined typography (Inter font) & custom color palette  
+  - 💎 Glassmorphism cards & motion-enhanced buttons  
+  - ⚡ Loading skeletons & toast notifications  
+- 🔒 **Server-Side AI Cache**  
+  - File-backed cache for instant repeat results  
+  - SHA-256 keying to avoid duplicate API calls  
+- 💾 **Easy Export**  
+  - Copy summary + tags to clipboard  
+  - Download as `.txt` or Markdown  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🖼️ Demo
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<p align="center">
+  <img src="docs/screenshots/dashboard-light.png" alt="KeyScribe Light Mode" width="600" />
+  <img src="docs/screenshots/dashboard-dark.png"  alt="KeyScribe Dark Mode"  width="600" />
+</p>
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🚀 Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- [Node.js](https://nodejs.org/) v16+  
+- [npm](https://npmjs.com/) or [Yarn](https://yarnpkg.com/)  
+- OpenAI API key (GPT-4.1 Nano or GPT-3.5 Turbo)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+### Installation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/keyscribe.git
+cd keyscribe
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Install dependencies
+npm install
