@@ -9,7 +9,7 @@ export default function SummarizeButton({ text, length, onSummarize }) {
     if (!text.trim()) return;
     setLoading(true);
     try {
-      const { data } = await axios.post('/summarize', { text, length });
+      const { data } = await axios.post('/api/summarize', { text, length });
       const summaryData = data.bullets.map(b => ({ bullet: b, context: '' }));
       onSummarize(summaryData, data.tags);
     } catch (err) {
