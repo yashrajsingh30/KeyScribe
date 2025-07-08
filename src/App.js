@@ -81,17 +81,23 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
 import { fetchNotes, saveNote, deleteNote } from './lib/appwrite';
-import Header from './components/Header';
-import NotesList from './components/NotesList';
+import Header     from './components/Header';
+import NotesList  from './components/NotesList';
 import NoteEditor from './components/NoteEditor';
-import AISidebar from './components/AISidebar';
+import AISidebar  from './components/AISidebar';
 
 export default function App() {
-  const userId = 'anonymous';              // later swap to real auth
-  const [notes, setNotes] = useState([]);  // array of Appwrite documents
+  const userId = 'anonymous';           // swap for real auth when ready
+
+  // Notes CRUD state
+  const [notes,    setNotes]    = useState([]);
   const [selected, setSelected] = useState(null);
 
-  // 1) Load on mount
+  // AI panel state
+  const [summary, setSummary] = useState([]);
+  const [tags,    setTags]    = useState([]);
+
+  // Load notes on mount
   useEffect(() => {
     fetchNotes(userId).then(docs => {
       setNotes(docs);
@@ -99,7 +105,7 @@ export default function App() {
     });
   }, []);
 
-  // 2) Create a new blank note
+  // Create a new note
   const handleNew = async () => {
     const now = Date.now();
     const doc = await saveNote({ title: '', content: '', updatedAt: now, userId });
@@ -107,35 +113,41 @@ export default function App() {
     setSelected(doc);
   };
 
-  // 3) Update (autosave) an existing note
+  // Update (autosave) an existing note
   const handleUpdate = async updated => {
-    console.log('📝 updating note', updated.$id, updated.title);
-    // Optimistically update UI
+    // Update UI immediately
     setNotes(prev => prev.map(n => (n.$id === updated.$id ? updated : n)));
     setSelected(updated);
 
-    // Persist to Appwrite
-    const saved = await saveNote({ 
-      ...updated, 
-      updatedAt: Date.now(), 
-      userId 
+    // Persist and reconcile any server‐side changes
+    const saved = await saveNote({
+      ...updated,
+      updatedAt: Date.now(),
+      userId
     });
-    // Reconcile any changes from the backend
     setNotes(prev => prev.map(n => (n.$id === saved.$id ? saved : n)));
     setSelected(saved);
   };
 
-  // 4) Delete a note
+  // Delete a note
   const handleDelete = async note => {
     await deleteNote(note.$id);
     setNotes(prev => prev.filter(n => n.$id !== note.$id));
     setSelected(null);
   };
 
+  // Handler to receive new summary & tags from the SummaryTab
+  const handleSummarize = (bullets, extractedTags) => {
+  console.log('handleSummarize:', bullets, extractedTags);  // <— add this
+  setSummary(bullets);
+  setTags(extractedTags);
+};
+
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 transition-colors duration-500 ease-in-out">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
       <Header />
       <div className="grid grid-cols-[1fr_2fr_1fr] gap-6 max-w-6xl mx-auto p-6">
+        {/* Notes sidebar */}
         <NotesList
           notes={notes}
           selectedId={selected?.$id}
@@ -143,13 +155,20 @@ export default function App() {
           onNew={handleNew}
         />
 
+        {/* Editor */}
         <NoteEditor
           note={selected}
           onUpdate={handleUpdate}
           onDelete={handleDelete}
         />
 
-        <AISidebar note={selected} />
+        {/* AI Sidebar with shared summary & tags */}
+        <AISidebar
+          note={selected}
+          summary={summary}
+          tags={tags}
+          onSummarize={handleSummarize}
+        />
       </div>
     </div>
   );
