@@ -1,4 +1,3 @@
-// src/components/SummaryTab.jsx
 import React, { useState } from 'react';
 import SummarizeButton from './SummarizeButton';
 import SummaryPanel    from './SummaryPanel';
@@ -8,11 +7,22 @@ export default function SummaryTab({
   note,
   summary,
   tags,
-  onSummarize
+  onSummarize,
+  onBulletClick,
+  filterWord,
+  onClearFilter
 }) {
   const [loading, setLoading] = useState(false);
 
-  if (!note) return <p>Select a note…</p>;
+  // If no note selected
+  if (!note) {
+    return <p className="text-center text-neutral-500">Select or create a note to summarize.</p>;
+  }
+
+  // Filter the bullets array if filterWord is set
+  const displayed = filterWord
+    ? summary.filter(b => b.toLowerCase().includes(filterWord.toLowerCase()))
+    : summary;
 
   return (
     <div className="space-y-4">
@@ -20,15 +30,31 @@ export default function SummaryTab({
         text={note.content}
         length="medium"
         setLoading={setLoading}
-        onSummarize={(bullets, extractedTags) => {
-          console.log('SummaryTab onSummarize:', extractedTags); // <—
-          onSummarize(bullets, extractedTags);
-        }}
+        onSummarize={onSummarize}
       />
 
-      <SummaryPanel summary={summary} loading={loading} />
+      <SummaryPanel
+        summary={displayed}
+        loading={loading}
+        onBulletClick={onBulletClick}
+      />
 
-      <TagChips tags={tags} onClickTag={()=>{}} />
+      {/* Clear filter button */}
+      {filterWord && (
+        <div className="text-right">
+          <button
+            onClick={() => {
+              console.log('🧹 SummaryTab calling onClearFilter');
+              onClearFilter();
+            }}
+            className="text-sm text-neutral-500 hover:underline"
+          >
+            Clear filter “{filterWord}”
+          </button>
+        </div>
+      )}
+
+      <TagChips tags={tags} onClickTag={() => {}} />
     </div>
   );
 }
