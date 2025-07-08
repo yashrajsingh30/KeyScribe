@@ -7,7 +7,7 @@
 
 /* === Global dark/light background & text colors === */
 @layer base {
-  html {
+  html, body, #root {
     /* smooth 0.5s fade for bg & text */
     @apply transition-colors duration-500 ease-in-out;
   }
