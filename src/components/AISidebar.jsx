@@ -1,16 +1,18 @@
+// src/components/AISidebar.jsx
 import React, { useState } from 'react';
-import SummaryTab  from './SummaryTab';
-import TagsTab     from './TagsTab';
-import ContextTab  from './ContextTab';
+import SummaryTab    from './SummaryTab';
+import TagsTab       from './TagsTab';
+import ContextTab    from './ContextTab';
 import WordCloudTab  from './WordCloudTab';
-import ExportTab   from './ExportTab';
+import ExportTab     from './ExportTab';
 
 const TABS = [
-  { key: 'summary', label: 'Summary'  },
-  { key: 'tags',    label: 'Tags'     },
-  { key: 'context', label: 'Context'  },
-  { key: 'wordcloud', label: 'Word Cloud' },
-  { key: 'export',  label: 'Export'   },
+  { key: 'summary', label: 'Summary'    },
+  { key: 'tags',    label: 'Tags'       },
+  { key: 'context', label: 'Context'    },
+
+ { key: 'wordcloud', label: 'Word Cloud' },
+  { key: 'export',  label: 'Export'     },
 ];
 
 export default function AISidebar({ note, summary, tags, onSummarize }) {
@@ -20,18 +22,21 @@ export default function AISidebar({ note, summary, tags, onSummarize }) {
 
   return (
     <aside className="p-4 border-l max-h-screen overflow-y-auto">
-      {/* Tab Nav */}
+      {/* Tab Navigation */}
       <nav className="flex space-x-2 mb-4">
         {TABS.map(t => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-3 py-1 rounded ${
-              tab === t.key
+            className={`
+              px-3 py-1 rounded
+              ${tab === t.key
                 ? 'bg-primary text-white'
-                : 'hover:bg-neutral-200 dark:hover:bg-neutral-700'
-            }`}
-          >{t.label}</button>
+                : 'hover:bg-neutral-200 dark:hover:bg-neutral-700'}
+            `}
+          >
+            {t.label}
+          </button>
         ))}
       </nav>
 
@@ -47,13 +52,16 @@ export default function AISidebar({ note, summary, tags, onSummarize }) {
             setTab('context');
           }}
           filterWord={filterWord}
-          onClearFilter={() => {
-            console.log('🧹 Clearing filterWord');
-            setFilterWord(null);
-          }}
+          onClearFilter={() => setFilterWord(null)}
         />
       )}
-      {tab === 'tags' && <TagsTab note={note} summary={summary} tags={tags} />}
+      {tab === 'tags' && (
+        <TagsTab
+          note={note}
+          summary={summary}
+          tags={tags}
+        />
+      )}
       {tab === 'context' && (
         <ContextTab
           note={note}
@@ -65,6 +73,7 @@ export default function AISidebar({ note, summary, tags, onSummarize }) {
           }}
         />
       )}
+      {/* 🔥 Render the WordCloudTab under the new key */}
       {tab === 'wordcloud' && (
         <WordCloudTab
           summary={summary}
@@ -74,7 +83,13 @@ export default function AISidebar({ note, summary, tags, onSummarize }) {
           }}
         />
       )}
-      {tab === 'export' && <ExportTab note={note} summary={summary} tags={tags} />}
+      {tab === 'export' && (
+        <ExportTab
+          note={note}
+          summary={summary}
+          tags={tags}
+        />
+      )}
     </aside>
   );
 }

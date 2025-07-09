@@ -1,14 +1,21 @@
-/* src/index.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* === Global dark/light background & text colors === */
+/* ─── Smooth theme transition ─── */
 @layer base {
   html, body, #root {
-    /* smooth 0.5s fade for bg & text */
     @apply transition-colors duration-500 ease-in-out;
   }
+}
+
+/* ─── Hide every native scrollbar everywhere ─── */
+* {
+  scrollbar-width: none !important;       /* Firefox */
+  -ms-overflow-style: none !important;    /* IE 10+ & Edge */
+}
+*::-webkit-scrollbar {
+  display: none !important;               /* Chrome, Safari, Opera */
 }
