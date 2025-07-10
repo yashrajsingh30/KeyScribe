@@ -1,43 +1,51 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
+import { useAuth } from './components/AuthContext';
+import AuthPage      from './components/AuthPage';
+import Header        from './components/Header';
+import NotesList     from './components/NotesList';
+import NoteEditor    from './components/NoteEditor';
+import AISidebar     from './components/AISidebar';
+import MobileAIDrawer from './components/MobileAIDrawer';
 import { fetchNotes, saveNote, deleteNote } from './lib/appwrite';
-import Header           from './components/Header';
-import NotesList        from './components/NotesList';
-import NoteEditor       from './components/NoteEditor';
-import AISidebar        from './components/AISidebar';
-import MobileAIDrawer   from './components/MobileAIDrawer';
 
 export default function App() {
-  const userId = 'anonymous';
-
-  // Notes state
+  const { user, loading } = useAuth();
   const [notes, setNotes]       = useState([]);
   const [selected, setSelected] = useState(null);
-
-  // AI state
-  const [summary, setSummary] = useState([]);
-  const [tags,    setTags]    = useState([]);
-
-  // Mobile drawer
+  const [summary, setSummary]   = useState([]);
+  const [tags, setTags]         = useState([]);
   const [showAIDrawer, setShowAIDrawer] = useState(false);
 
+  // Load notes after login
   useEffect(() => {
-    fetchNotes(userId).then(docs => {
-      setNotes(docs);
-      if (docs.length) setSelected(docs[0]);
-    });
-  }, []);
+    if (!loading && user) {
+      fetchNotes(user.$id).then(docs => {
+        setNotes(docs);
+        if (docs.length) setSelected(docs[0]);
+      });
+    }
+  }, [loading, user]);
+
+  if (loading) {
+    return <div className="p-6">Loading…</div>;
+  }
+  if (!user) {
+    return <AuthPage />;
+  }
 
   const handleNew = async () => {
     const now = Date.now();
-    const doc = await saveNote({ title: '', content: '', updatedAt: now, userId });
+    const doc = await saveNote({ title:'', content:'', updatedAt: now, userId: user.$id });
     setNotes(prev => [doc, ...prev]);
     setSelected(doc);
   };
 
   const handleUpdate = async updated => {
+    updated.userId = user.$id;
     setNotes(prev => prev.map(n => (n.$id===updated.$id?updated:n)));
     setSelected(updated);
-    const saved = await saveNote({ ...updated, updatedAt: Date.now(), userId });
+    const saved = await saveNote(updated);
     setNotes(prev => prev.map(n => (n.$id===saved.$id?saved:n)));
     setSelected(saved);
   };
@@ -55,12 +63,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 transition-colors duration-500 ease-in-out">
-      {/* Pass drawer-opener into Header */}
       <Header onOpenAIMobile={() => setShowAIDrawer(true)} />
 
-      {/* On mobile: single column; on md+: 14rem | 1fr | 28rem */}
       <div className="grid grid-cols-1 md:grid-cols-[14rem_1fr_28rem] gap-6 max-w-7xl mx-auto p-6">
-        {/* always visible */}
         <NotesList
           notes={notes}
           selectedId={selected?.$id}
@@ -74,7 +79,6 @@ export default function App() {
           onDelete={handleDelete}
         />
 
-        {/* desktop-only AI sidebar */}
         <div className="hidden md:block">
           <AISidebar
             note={selected}
@@ -85,15 +89,16 @@ export default function App() {
         </div>
       </div>
 
-      {/* Mobile AI drawer */}
-      <MobileAIDrawer
-        open={showAIDrawer}
-        onClose={() => setShowAIDrawer(false)}
-        note={selected}
-        summary={summary}
-        tags={tags}
-        onSummarize={handleSummarize}
-      />
+      {showAIDrawer && (
+    <MobileAIDrawer
+      open={true}
+      onClose={() => setShowAIDrawer(false)}
+      note={selected}
+      summary={summary}
+      tags={tags}
+     onSummarize={handleSummarize}
+    />
+  )}
     </div>
   );
 }

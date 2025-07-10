@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sendgrid/mail": "^8.1.5",
     "@tailwindcss/postcss": "^4.1.11",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -15,6 +16,7 @@
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "framer-motion": "^12.23.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.525.0",
     "openai": "^5.8.2",
     "react": "^19.1.0",
