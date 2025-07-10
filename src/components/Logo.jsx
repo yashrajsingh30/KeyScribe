@@ -7,7 +7,7 @@ export default function Logo({ className = '' }) {
       className={`
         inline-flex items-center justify-center
         p-0.5                 /* 16px padding */
-        w-20 h-24           /* 112px × 96px container */
+        w-24 h-24           /* 112px × 96px container */
         rounded-2xl
         bg-white
         dark:bg-neutral-800

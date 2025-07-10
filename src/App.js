@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { fetchNotes, saveNote, deleteNote } from './lib/appwrite';
-import Header     from './components/Header';
-import NotesList  from './components/NotesList';
-import NoteEditor from './components/NoteEditor';
-import AISidebar  from './components/AISidebar';
+import Header           from './components/Header';
+import NotesList        from './components/NotesList';
+import NoteEditor       from './components/NoteEditor';
+import AISidebar        from './components/AISidebar';
+import MobileAIDrawer   from './components/MobileAIDrawer';
 
 export default function App() {
   const userId = 'anonymous';
@@ -15,6 +16,9 @@ export default function App() {
   // AI state
   const [summary, setSummary] = useState([]);
   const [tags,    setTags]    = useState([]);
+
+  // Mobile drawer
+  const [showAIDrawer, setShowAIDrawer] = useState(false);
 
   useEffect(() => {
     fetchNotes(userId).then(docs => {
@@ -31,19 +35,16 @@ export default function App() {
   };
 
   const handleUpdate = async updated => {
-    // Optimistic UI
-    setNotes(prev => prev.map(n => (n.$id === updated.$id ? updated : n)));
+    setNotes(prev => prev.map(n => (n.$id===updated.$id?updated:n)));
     setSelected(updated);
-
-    // Persist & reconcile
     const saved = await saveNote({ ...updated, updatedAt: Date.now(), userId });
-    setNotes(prev => prev.map(n => (n.$id === saved.$id ? saved : n)));
+    setNotes(prev => prev.map(n => (n.$id===saved.$id?saved:n)));
     setSelected(saved);
   };
 
   const handleDelete = async note => {
     await deleteNote(note.$id);
-    setNotes(prev => prev.filter(n => n.$id !== note.$id));
+    setNotes(prev => prev.filter(n=>n.$id!==note.$id));
     setSelected(null);
   };
 
@@ -53,14 +54,17 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
-      <Header />
-      <div className="grid grid-cols-[14rem_1fr_28rem] gap-6 max-w-7xl mx-auto p-6">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 transition-colors duration-500 ease-in-out">
+      {/* Pass drawer-opener into Header */}
+      <Header onOpenAIMobile={() => setShowAIDrawer(true)} />
 
+      {/* On mobile: single column; on md+: 14rem | 1fr | 28rem */}
+      <div className="grid grid-cols-1 md:grid-cols-[14rem_1fr_28rem] gap-6 max-w-7xl mx-auto p-6">
+        {/* always visible */}
         <NotesList
           notes={notes}
           selectedId={selected?.$id}
-          onSelect={id => setSelected(notes.find(n => n.$id === id))}
+          onSelect={id => setSelected(notes.find(n=>n.$id===id))}
           onNew={handleNew}
         />
 
@@ -70,13 +74,26 @@ export default function App() {
           onDelete={handleDelete}
         />
 
-        <AISidebar
-          note={selected}
-          summary={summary}
-          tags={tags}
-          onSummarize={handleSummarize}
-        />
+        {/* desktop-only AI sidebar */}
+        <div className="hidden md:block">
+          <AISidebar
+            note={selected}
+            summary={summary}
+            tags={tags}
+            onSummarize={handleSummarize}
+          />
+        </div>
       </div>
+
+      {/* Mobile AI drawer */}
+      <MobileAIDrawer
+        open={showAIDrawer}
+        onClose={() => setShowAIDrawer(false)}
+        note={selected}
+        summary={summary}
+        tags={tags}
+        onSummarize={handleSummarize}
+      />
     </div>
   );
 }
